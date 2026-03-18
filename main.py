@@ -3,7 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-from routers import auth
+from routers import auth, documents, chat
 
 load_dotenv()
 
@@ -20,6 +20,8 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(auth.router)
+app.include_router(documents.router)
+app.include_router(chat.router)
 
 
 
