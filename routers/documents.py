@@ -6,7 +6,8 @@ from qdrant_client.models import PointStruct, VectorParams, Distance, PayloadSch
 from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_ollama import OllamaEmbeddings
-import os
+# from langchain_huggingface import HuggingFaceEndpointEmbeddings
+import os 
 import jwt
 import uuid
 import tempfile
@@ -22,6 +23,10 @@ client = QdrantClient(
     api_key=os.getenv("QDRANT_API_KEY")
 )
 
+# embeddings = HuggingFaceEndpointEmbeddings(
+#     model="sentence-transformers/all-MiniLM-L6-v2",
+#     huggingfacehub_api_token=os.getenv("HUGGINGFACE_API_KEY")
+# )
 # Embedding model
 embeddings = OllamaEmbeddings(
     model="nomic-embed-text"
@@ -111,4 +116,7 @@ async def upload(uploaded: UploadFile = File(...), credentials = Security(securi
         }
         
     except Exception as e:
+        print(f"Upload error: {e}")  # this will print in your terminal
+        import traceback
+        traceback.print_exc()  # this prints the full traceback
         raise HTTPException(status_code=400, detail=str(e))

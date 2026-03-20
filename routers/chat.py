@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer
 from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from langchain_ollama import OllamaEmbeddings
+# from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from groq import Groq
 import os
 import jwt
@@ -20,6 +21,11 @@ client = QdrantClient(
     api_key=os.getenv("QDRANT_API_KEY")
 )
 
+
+# embeddings = HuggingFaceEndpointEmbeddings(
+#     model="nomic-ai/nomic-embed-text-v1.5",
+#     huggingfacehub_api_token=os.getenv("HUGGINGFACE_API_KEY")
+# )
 
 # Embedding model
 embeddings = OllamaEmbeddings(

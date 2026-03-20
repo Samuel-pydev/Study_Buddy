@@ -39,7 +39,7 @@ def signin(credentials: UserCredentials):
             "password": credentials.password
         })
         return{
-            "token": response.session.access_token,
+            "access_token": response.session.access_token,
             "user_id": response.user.id
         }
     except Exception as e:
