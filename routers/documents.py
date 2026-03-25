@@ -1,6 +1,7 @@
 from fastapi import HTTPException, UploadFile, File, APIRouter
 from fastapi.security import HTTPBearer
 from fastapi import Security
+from supabase import create_client
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, VectorParams, Distance, PayloadSchemaType
 from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
@@ -36,6 +37,11 @@ EMBEDDINGS_SIZE = 768
 COLLECTION_NAME = "student_documents"
 
 router = APIRouter(prefix="/documents", tags=["documents"])
+
+supabase_client = create_client(
+    os.getenv("SUPABASE_URL"),
+    os.getenv("SUPABASE_KEY")
+)
 
 # To create Collection
 def create_collection_if_not_exist():
@@ -102,10 +108,27 @@ async def upload(uploaded: UploadFile = File(...), credentials = Security(securi
                 }
             ))
             
-        client.upsert(
+        # client.upsert(
+        #     collection_name=COLLECTION_NAME,
+        #     points=points
+        
+        if not points:
+            raise HTTPException(status_code=400, detail="No chunks were extracted from the document")
+        
+        batch_size = 50
+        for i in range(0, len(points), batch_size):
+            batch = points[i:i + batch_size]
+            client.upsert(
             collection_name=COLLECTION_NAME,
-            points=points
+            points=batch
         )
+        print(f"Uploaded Batch {i//batch_size + 1}")
+        
+        supabase_client.table("documents").insert({
+            "user_id": user_id,
+            "filename": uploaded.filename,
+            "chunks": len(chunks)
+        }).execute()
         
         os.unlink(tmp_path)
         
@@ -119,4 +142,19 @@ async def upload(uploaded: UploadFile = File(...), credentials = Security(securi
         print(f"Upload error: {e}")  # this will print in your terminal
         import traceback
         traceback.print_exc()  # this prints the full traceback
+        raise HTTPException(status_code=400, detail=str(e))
+    
+@router.post("/my_documents")
+def get_documents(credentials = Security(security)):
+    try:
+        token = credentials.credentials
+        user_id = get_user_id_from_token(token)
+        
+        response = supabase_client.table("documetns")\
+            .select("*")\
+            .eq("user_id", user_id)\
+            .order("created_at", desc=True)\
+            .execute()
+        return {"documents": response.data}
+    except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
