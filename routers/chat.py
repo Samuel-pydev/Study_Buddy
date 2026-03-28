@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer
 from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from langchain_ollama import OllamaEmbeddings
-# from langchain_huggingface import HuggingFaceEndpointEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from groq import Groq
 import os
 import jwt
@@ -28,9 +28,11 @@ client = QdrantClient(
 # )
 
 # Embedding model
-embeddings = OllamaEmbeddings(
-    model="nomic-embed-text"
+embeddings = GoogleGenerativeAIEmbeddings(
+    model="gemini-embedding-2-preview",
+    google_api_key=os.getenv("GEMINI_API_KEY")
 )
+EMBEDDINGS_SIZE = 3072
 
 # Groq LLM
 groq_client = Groq(

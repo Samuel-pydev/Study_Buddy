@@ -2,13 +2,13 @@
             --bg: #0a0a0f;
             --surface: #111118;
             --border: #1e1e2e;
-            --accent: #7c6af7;
+            --accent: #DD403A;
             --accent2: #f76a8a;
             --text: #e8e8f0;
-            --muted: #6b6b80;
+            --muted: #6b6b80; 
             --success: #4ade80;
-            --error: #f87171;
-            --user-bubble: #7c6af7;
+            --error: #FD151B;
+            --user-bubble: #DD403A;
             --ai-bubble: #1a1a2e;
         }
 

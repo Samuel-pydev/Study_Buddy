@@ -7,7 +7,7 @@ from qdrant_client.models import PointStruct, VectorParams, Distance, PayloadSch
 from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_ollama import OllamaEmbeddings
-# from langchain_huggingface import HuggingFaceEndpointEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import os 
 import jwt
 import uuid
@@ -28,12 +28,14 @@ client = QdrantClient(
 #     model="sentence-transformers/all-MiniLM-L6-v2",
 #     huggingfacehub_api_token=os.getenv("HUGGINGFACE_API_KEY")
 # )
-# Embedding model
-embeddings = OllamaEmbeddings(
-    model="nomic-embed-text"
-)
 
-EMBEDDINGS_SIZE = 768
+# Embedding model
+embeddings = GoogleGenerativeAIEmbeddings(
+    model="gemini-embedding-2-preview",
+    google_api_key=os.getenv("GEMINI_API_KEY")
+)
+EMBEDDINGS_SIZE = 3072
+
 COLLECTION_NAME = "student_documents"
 
 router = APIRouter(prefix="/documents", tags=["documents"])
