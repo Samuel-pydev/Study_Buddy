@@ -146,13 +146,13 @@ async def upload(uploaded: UploadFile = File(...), credentials = Security(securi
         traceback.print_exc()  # this prints the full traceback
         raise HTTPException(status_code=400, detail=str(e))
     
-@router.post("/my_documents")
+@router.get("/my-documents")
 def get_documents(credentials = Security(security)):
     try:
         token = credentials.credentials
         user_id = get_user_id_from_token(token)
         
-        response = supabase_client.table("documetns")\
+        response = supabase_client.table("documents")\
             .select("*")\
             .eq("user_id", user_id)\
             .order("created_at", desc=True)\

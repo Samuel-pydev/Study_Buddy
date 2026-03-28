@@ -18,19 +18,20 @@ const API = 'http://127.0.0.1:8000';
     }
 
     async function fetchDocs() {
-        try {
-            const res = await fetch(`${API}/documents/my-documents`, {
-                headers: { 'authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
-            if (res.ok) {
-                docs = data.documents;
-                renderDocs();
-            }
-        } catch (err) {
-            console.log('Could not fetch documents', err);
+    try {
+        const res = await fetch(`${API}/documents/my-documents`, {
+            headers: { 'authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        console.log('Fetch docs response:', data)  // add this
+        if (res.ok) {
+            docs = data.documents;
+            renderDocs();
         }
+    } catch (err) {
+        console.log('Could not fetch documents', err);
     }
+}
 
     function renderDocs() {
         const list = document.getElementById('docsList');
@@ -104,7 +105,7 @@ const API = 'http://127.0.0.1:8000';
             // });
 
             showMessage(`✓ ${data.filename} uploaded successfully!`, 'success');
-            renderDocs();
+            fetchDocs();
 
         } catch (err) {
             showMessage('Could not connect to server', 'error');
