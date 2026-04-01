@@ -3,69 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Study Buddy — My Documents</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>Study Buddy — Dashboard</title>
+    <link rel="stylesheet" href="../CSS/shared.css">
     <link rel="stylesheet" href="../CSS/dashboard.css">
-
 </head>
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="logo">
-            <div class="logo-dot"></div>
-            Study Buddy
-        </div>
-        <button class="btn-logout" onclick="logout()">Logout</button>
-    </nav>
+<div class="app-shell">
+    
+    <!-- SIDEBAR OVERLAY (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- BREADCRUMB -->
-    <div class="breadcrumb">
-        Study Buddy <span class="sep">›</span> <span>My Documents</span>
-    </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <a href="dashboard.html" class="sidebar-logo">
+            <div class="logo-mark">SB</div>
+            <div class="logo-text">Study Buddy</div>
+        </a>
 
-    <!-- MAIN -->
-    <div class="main">
-
-        <!-- UPLOAD -->
-        <div style="margin-bottom: 32px;">
-            <h2 class="section-title">Upload Document</h2>
-            <p class="section-subtitle">Upload a PDF to start asking questions</p>
-
-            <div id="message" class="message"></div>
-
-            <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()">
-                <div class="upload-icon">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><g fill="#fff"><path d="m12 2l.117.007a1 1 0 0 1 .876.876L13 3v4l.005.15a2 2 0 0 0 1.838 1.844L15 9h4l.117.007a1 1 0 0 1 .876.876L20 10v9a3 3 0 0 1-2.824 2.995L17 22H7a3 3 0 0 1-2.995-2.824L4 19V5a3 3 0 0 1 2.824-2.995L7 2zm0 9l-.09.004l-.058.007l-.118.025l-.105.035l-.113.054l-.111.071a1 1 0 0 0-.112.097l-2.5 2.5a1 1 0 0 0 0 1.414l.094.083a1 1 0 0 0 1.32-.083l.793-.793V18a1 1 0 0 0 2 0v-3.585l.793.792a1 1 0 0 0 1.414-1.414l-2.5-2.5l-.082-.073l-.104-.074l-.098-.052l-.11-.044l-.112-.03l-.126-.017z"/><path d="M19 7h-4l-.001-4.001z"/></g></svg>
-
+        <div class="sidebar-nav">
+            <div class="nav-section-label">Menu</div>
+            
+            <a href="dashboard.html" class="nav-link active">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M19 21H5a1 1 0 0 1-1-1v-9H1l10.327-9.388a1 1 0 0 1 1.346 0L23 11h-3v9a1 1 0 0 1-1 1zM6 19h12V9.157l-6-5.454l-6 5.454z"/></svg>
                 </div>
-                <div class="upload-title">Tap to upload a PDF</div>
-                <div class="upload-subtitle">or drag and drop here</div>
-                <button class="btn-upload" id="uploadBtn">Choose File</button>
-                <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="handleUpload(event)" />
-            </div>
+                Home
+            </a>
+            
+            <a href="dashboard.html#uploadBox" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3 19h18v2H3zM13 5.828V17h-2V5.828L4.929 11.9l-1.414-1.414L12 2l8.485 8.485l-1.414 1.414z"/></svg>
+                </div>
+                Upload
+            </a>
+
+            <a href="questioner.html" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10m-1-7v2h2v-2zm2-1.645A3.502 3.502 0 0 0 12 6.5a3.501 3.501 0 0 0-3.433 2.813l1.962.393A1.5 1.5 0 1 1 12 11.5a1 1 0 0 0-1 1V14h2z"/></svg>
+                </div>
+                Questioner
+            </a>
+
+            <a href="summarize.html" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v2H3zm0 7h18v2H3zm0 7h14v2H3z"/></svg>
+                </div>
+                Summarize
+            </a>
+
+            <a href="chat.html" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6.455 19L2 22.5V4a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1zm-.692-2H20V5H4v13.385zM8 9h8v2H8z"/></svg>
+                </div>
+                Chat with AI
+            </a>
+
+            <div class="nav-section-label" style="margin-top: 10px;">Account</div>
+
+            <a href="profile.html" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M4 22a8 8 0 1 1 16 0h-2a6 6 0 1 0-12 0zm8-9c-3.315 0-6-2.685-6-6s2.685-6 6-6s6 2.685 6 6s-2.685 6-6 6m0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4"/></svg>
+                </div>
+                My Profile
+            </a>
         </div>
 
-        <!-- DOCUMENTS -->
-        <div>
-            <h2 class="section-title">My Documents</h2>
-            <p class="section-subtitle">Click chat to start asking questions</p>
-            <div class="docs-list" id="docsList">
-                <div class="empty-state">
-                    <div class="empty-icon">
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle">
+                <div class="nav-icon" id="themeIcon">
+                    <!-- Icon injected by JS -->
+                </div>
+                <span id="themeText">Dark Mode</span>
+            </button>
 
-                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 16 16"><path fill="#fff" d="M9 4.5V1H5.5A1.5 1.5 0 0 0 4 2.5v2.707A5.5 5.5 0 0 1 8.663 15H12.5a1.5 1.5 0 0 0 1.5-1.5V6h-3.5A1.5 1.5 0 0 1 9 4.5m1 0V1.25L13.75 5H10.5a.5.5 0 0 1-.5-.5M2.318 7.318a4.5 4.5 0 1 0 6.364 6.364a4.5 4.5 0 0 0-6.364-6.364m4.95 4.95a.5.5 0 0 1-.707 0L5.5 11.208l-1.06 1.06a.5.5 0 0 1-.708-.707l1.06-1.061l-1.06-1.06a.5.5 0 0 1 .707-.708L5.5 9.792l1.06-1.06a.5.5 0 0 1 .708.707L6.208 10.5l1.06 1.06a.5.5 0 0 1 0 .708"/></svg>
+            <button class="btn-logout-side" onclick="handleLogout()">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1zm6-7h6v2h-6v3l-5-4l5-4z"/></svg>
+                </div>
+                Logout
+            </button>
+        </div>
+    </aside>
 
+    <!-- MAIN CONTENT -->
+    <main class="content">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <button class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="topbar-title">Dashboard</div>
+            <div class="topbar-right">
+                <!-- User Avatar will go here optionally -->
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <div class="page-content">
+            
+            <div class="greeting-banner">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Spark&backgroundColor=7c6af7" alt="AI Agent" class="ai-avatar">
+                <div class="greeting-text">
+                    <h2>Hey there! I'm Spark.E</h2>
+                    <p>Your personal AI tutor, here to help you learn anything you can imagine.</p>
+                </div>
+            </div>
+
+            <!-- QUICK ACTIONS -->
+            <div class="grid-layout">
+                <div class="grid-main">
+                    
+                    <h3 class="section-title">Quick Actions</h3>
+                    <div class="actions-grid">
+                        <button class="action-card" onclick="document.getElementById('fileInput').click()">
+                            <div class="action-icon bg-blue"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 19h18v2H3zM13 5.828V17h-2V5.828L4.929 11.9l-1.414-1.414L12 2l8.485 8.485l-1.414 1.414z"/></svg></div>
+                            <span class="action-title">Upload Materials</span>
+                        </button>
+
+                        <a href="questioner.html" class="action-card">
+                            <div class="action-icon bg-purple"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 18v2H7V8.535L2 9.424V7.38l8.03-1.432H11v10.052h4.5v2zm4.5 4v-2H22v2zM15.5 4h4.5v2h-4.5z"/></svg></div>
+                            <span class="action-title">Create Quiz</span>
+                        </a>
+
+                        <a href="summarize.html" class="action-card">
+                            <div class="action-icon bg-green"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v2H3zm0 7h18v2H3zm0 7h14v2H3z"/></svg></div>
+                            <span class="action-title">Summarize Doc</span>
+                        </a>
+
+                        <a href="chat.html" class="action-card">
+                            <div class="action-icon bg-orange"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M5.763 17H20V5H4v13.385zM6.455 19L2 22.5V4a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1zM9 9h6v2H9z"/></svg></div>
+                            <span class="action-title">Chat with Spark.E</span>
+                        </a>
                     </div>
-                    <p>No documents yet.<br>Upload your first PDF above!</p>
+
+                    <!-- UPLOAD COMPONENT (Hidden input) -->
+                    <div id="message" class="msg-box" style="margin-top: 24px;"></div>
+                    <div class="upload-box card" id="uploadBox" onclick="document.getElementById('fileInput').click()" style="margin-top: 24px; padding: 40px 20px;">
+                        <div class="upload-icon">📄</div>
+                        <div class="action-title" style="margin-top:12px; font-size:1.1rem">Tap to upload a PDF</div>
+                        <div class="text-muted" style="margin-bottom:20px; font-size:0.85rem">or drag and drop here</div>
+                        <button class="btn btn-primary" id="uploadBtn">Choose File</button>
+                        <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="handleUpload(event)" />
+                    </div>
+
+                    <!-- RECENT DOCUMENTS -->
+                    <h3 class="section-title" style="margin-top: 40px;">Jump back in</h3>
+                    <p class="text-muted" style="margin-bottom: 16px; font-size:0.85rem;">Continue learning from your recently used documents.</p>
+                    
+                    <div class="docs-list" id="docsList">
+                        <!-- Filled by JS -->
+                        <div class="empty-state card">
+                            <div class="empty-icon">📂</div>
+                            <h3>No documents found</h3>
+                            <p>Upload your first PDF to begin your learning journey.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT RAIL / EXTRA -->
+                <div class="grid-side">
+                    <div class="card premium-card">
+                        <div class="premium-icon">⭐</div>
+                        <h3 class="premium-title">Upgrade to Premium</h3>
+                        <p class="premium-desc">Get 24/7 access to advanced AI tutoring, unlimited document uploads, and personalized study paths.</p>
+                        <button class="btn btn-primary" style="width: 100%; justify-content: center; background: white; color: black; box-shadow: none;">Upgrade now</button>
+                    </div>
+
+                    <div class="card streak-card">
+                        <h3 style="font-size: 0.9rem; font-family:'Space Grotesk'">🔥 Current Streak</h3>
+                        <div class="streak-val">3 Days!</div>
+                        <a href="profile.html" style="font-size: 0.8rem; color: var(--accent); text-decoration: none; font-weight:bold;">View Leaderboard</a>
+                    </div>
                 </div>
             </div>
+
         </div>
+    </main>
 
-    </div>
+</div>
 
-    <script src="../JavaScript/dashboard.js" ></script>
+<script src="../JavaScript/shared.js"></script>
+<script src="../JavaScript/dashboard.js"></script>
 
 </body>
 </html>

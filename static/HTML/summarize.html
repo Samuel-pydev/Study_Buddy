@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Study Buddy — Chat</title>
+    <title>Study Buddy — Summarize</title>
     <link rel="stylesheet" href="../CSS/shared.css">
-    <link rel="stylesheet" href="../CSS/chat.css">
+    <link rel="stylesheet" href="../CSS/summarize.css">
 </head>
 <body>
 
@@ -16,7 +16,7 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-        <!-- Exact same sidebar as dashboard -->
+        <!-- Exact same sidebar as dashboard.html -->
         <a href="dashboard.html" class="sidebar-logo">
             <div class="logo-mark">SB</div>
             <div class="logo-text">Study Buddy</div>
@@ -45,14 +45,14 @@
                 Questioner
             </a>
 
-            <a href="summarize.html" class="nav-link">
+            <a href="summarize.html" class="nav-link active">
                 <div class="nav-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v2H3zm0 7h18v2H3zm0 7h14v2H3z"/></svg>
                 </div>
                 Summarize
             </a>
 
-            <a href="chat.html" class="nav-link active">
+            <a href="chat.html" class="nav-link">
                 <div class="nav-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6.455 19L2 22.5V4a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1zm-.692-2H20V5H4v13.385zM8 9h8v2H8z"/></svg>
                 </div>
@@ -84,56 +84,72 @@
     </aside>
 
     <!-- CONTENT -->
-    <main class="content chat-content-area">
+    <main class="content">
         <header class="topbar">
             <button class="hamburger" id="hamburger">
                 <span></span><span></span><span></span>
             </button>
-            <div class="topbar-title" id="docName" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;">Chat</div>
-            <div class="topbar-right">
-                <span class="badge badge-accent">✦ Spark.E AI</span>
-            </div>
+            <div class="topbar-title">Document Summarizer</div>
         </header>
 
-        <!-- CHAT AREA -->
-        <div class="chat-area" id="chatArea">
-            <div class="chat-empty-state" id="emptyState">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Spark&backgroundColor=7c6af7" alt="AI Agent" class="ai-avatar-large">
-                <h3 class="empty-title">Ask me anything!</h3>
-                <p class="empty-subtitle">I'm Spark.E, your personal tutor. Ask questions about your document, request study guides, or clear up difficult concepts.</p>
-                <div class="chat-suggestions">
-                    <button class="btn-suggestion" onclick="insertSuggestion('Can you explain the main concepts in simple terms?')">Explain main concepts in simple terms</button>
-                    <button class="btn-suggestion" onclick="insertSuggestion('What are the most likely exam questions from this?')">Suggest possible exam questions</button>
-                </div>
-            </div>
-        </div>
+        <div class="page-content">
+            <div class="summarize-layout">
+                
+                <!-- SELECT DOCUMENT -->
+                <div class="card doc-selector-card">
+                    <div class="selector-header">
+                        <div class="selector-icon">📄</div>
+                        <div>
+                            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; margin-bottom: 4px;">Select Document</h3>
+                            <p class="text-muted" style="font-size: 0.85rem;">Choose a file to generate a comprehensive AI summary.</p>
+                        </div>
+                    </div>
 
-        <!-- INPUT BAR -->
-        <div class="input-container">
-            <div class="input-wrapper">
-                <div class="input-tools">
-                    <button class="btn-tool" onclick="window.location.href='dashboard.html#uploadBox'" title="Upload new document">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></svg>
-                    </button>
+                    <div id="message" class="msg-box" style="margin-top: 16px;"></div>
+
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <div class="form-group" style="flex: 1; margin: 0;">
+                            <select id="docSelect" class="styled-select">
+                                <option value="">Loading documents...</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" id="summarizeBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v2H3zm0 7h18v2H3zm0 7h14v2H3z"/></svg>
+                            Summarize
+                        </button>
+                    </div>
                 </div>
-                <input 
-                    type="text" 
-                    id="questionInput" 
-                    placeholder="Ask Spark.E about your material..." 
-                    onkeydown="if(event.key === 'Enter') sendMessage()"
-                />
-                <button class="btn-send" id="sendBtn" onclick="sendMessage()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12.707 3.293a1 1 0 0 0-1.414 0l-7 7a1 1 0 1 0 1.414 1.414L11 6.414V20a1 1 0 1 0 2 0V6.414l5.293 5.293a1 1 0 0 0 1.414-1.414l-7-7z"/></svg>
-                </button>
+
+                <!-- SUMMARY RESULT -->
+                <div class="card summary-result-card" id="resultCard" style="display: none;">
+                    <div class="summary-header">
+                        <h2 id="summaryTitle" class="summary-title">Summary</h2>
+                        <span class="badge badge-accent">AI Generated</span>
+                    </div>
+                    
+                    <div class="summary-content markdown-body" id="summaryContent">
+                        <!-- Summary injected here -->
+                    </div>
+                </div>
+
+                <!-- EMPTY STATE -->
+                <div class="card summary-empty-card" id="emptyState">
+                    <div class="empty-icon text-green">✨</div>
+                    <h3 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 8px;">Waiting for input</h3>
+                    <p class="text-muted" style="font-size: 0.9rem;">Select a document above to read its key points, main arguments, and summary instantly.</p>
+                </div>
+
             </div>
-            <div class="input-footer">AI responses can make mistakes. Consider verifying important information.</div>
         </div>
     </main>
 
 </div>
 
+<!-- Simple markdown parser for bold/lists -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <script src="../JavaScript/shared.js"></script>
-<script src="../JavaScript/chat.js"></script>
+<script src="../JavaScript/summarize.js"></script>
 
 </body>
 </html>

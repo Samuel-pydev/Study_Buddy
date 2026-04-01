@@ -1,0 +1,145 @@
+/* =========================================
+   STUDY BUDDY — SUMMARIZE STYLES
+   ========================================= */
+
+.summarize-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* --- DOCUMENT SELECTOR --- */
+.doc-selector-card {
+  padding: 24px;
+}
+
+.selector-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.selector-icon {
+  width: 48px; height: 48px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.styled-select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2310b981%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px top 50%;
+  background-size: 10px auto;
+  transition: all 0.2s;
+}
+
+.styled-select:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.15);
+}
+
+.text-green { color: #10b981; }
+
+.btn-primary { background: var(--gradient-success); }
+.btn-primary:hover { box-shadow: 0 4px 14px rgba(16,185,129,0.25); }
+
+
+/* --- EMPTY STATE --- */
+.summary-empty-card {
+  padding: 60px 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  border-width: 2px;
+}
+
+.summary-empty-card .empty-icon {
+  font-size: 3rem; margin-bottom: 16px;
+}
+
+
+/* --- SUMMARY RESULT --- */
+.summary-result-card {
+  padding: 32px;
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.summary-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.badge-accent {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+/* --- MARKDOWN STYLES --- */
+.summary-content {
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.summary-content h1, .summary-content h2, .summary-content h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--text);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.summary-content h1 { font-size: 1.5rem; }
+.summary-content h2 { font-size: 1.3rem; }
+.summary-content h3 { font-size: 1.1rem; }
+
+.summary-content p {
+  margin-bottom: 1em;
+}
+
+.summary-content ul, .summary-content ol {
+  margin-bottom: 1em;
+  padding-left: 24px;
+}
+
+.summary-content li {
+  margin-bottom: 0.5em;
+}
+
+.summary-content strong {
+  font-weight: 700;
+  color: var(--text);
+}

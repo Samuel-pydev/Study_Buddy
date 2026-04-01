@@ -71,6 +71,13 @@ client.create_payload_index(
     field_schema=PayloadSchemaType.KEYWORD
 )
 
+# Create index on filename so we can query by it later
+client.create_payload_index(
+    collection_name=COLLECTION_NAME,
+    field_name="filename",
+    field_schema=PayloadSchemaType.KEYWORD
+)
+
 def get_user_id_from_token(token: str):
     decoded = jwt.decode(token, options={"verify_signature": False})
     return decoded["sub"]

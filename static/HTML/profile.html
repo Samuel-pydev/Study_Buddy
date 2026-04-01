@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Study Buddy — Profile</title>
+    <link rel="stylesheet" href="../CSS/shared.css">
+    <link rel="stylesheet" href="../CSS/profile.css">
+</head>
+<body>
+
+<div class="app-shell">
+    
+    <!-- SIDEBAR OVERLAY (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <!-- Exact same sidebar as dashboard -->
+        <a href="dashboard.html" class="sidebar-logo">
+            <div class="logo-mark">SB</div>
+            <div class="logo-text">Study Buddy</div>
+        </a>
+
+        <div class="sidebar-nav">
+            <div class="nav-section-label">Menu</div>
+            <a href="dashboard.html" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M19 21H5a1 1 0 0 1-1-1v-9H1l10.327-9.388a1 1 0 0 1 1.346 0L23 11h-3v9a1 1 0 0 1-1 1zM6 19h12V9.157l-6-5.454l-6 5.454z"/></svg>
+                </div>
+                Home
+            </a>
+            
+            <a href="dashboard.html#uploadBox" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3 19h18v2H3zM13 5.828V17h-2V5.828L4.929 11.9l-1.414-1.414L12 2l8.485 8.485l-1.414 1.414z"/></svg>
+                </div>
+                Upload
+            </a>
+
+            <a href="questioner.html" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10m-1-7v2h2v-2zm2-1.645A3.502 3.502 0 0 0 12 6.5a3.501 3.501 0 0 0-3.433 2.813l1.962.393A1.5 1.5 0 1 1 12 11.5a1 1 0 0 0-1 1V14h2z"/></svg>
+                </div>
+                Questioner
+            </a>
+
+            <a href="summarize.html" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M3 4h18v2H3zm0 7h18v2H3zm0 7h14v2H3z"/></svg>
+                </div>
+                Summarize
+            </a>
+
+            <a href="chat.html" class="nav-link">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M6.455 19L2 22.5V4a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1zm-.692-2H20V5H4v13.385zM8 9h8v2H8z"/></svg>
+                </div>
+                Chat with AI
+            </a>
+
+            <div class="nav-section-label" style="margin-top: 10px;">Account</div>
+
+            <a href="profile.html" class="nav-link active">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M4 22a8 8 0 1 1 16 0h-2a6 6 0 1 0-12 0zm8-9c-3.315 0-6-2.685-6-6s2.685-6 6-6s6 2.685 6 6s-2.685 6-6 6m0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4"/></svg>
+                </div>
+                My Profile
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle">
+                <div class="nav-icon" id="themeIcon"></div>
+                <span id="themeText">Dark Mode</span>
+            </button>
+            <button class="btn-logout-side" onclick="handleLogout()">
+                <div class="nav-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M4 18h2v2h12V4H6v2H4V3a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1zm6-7h6v2h-6v3l-5-4l5-4z"/></svg>
+                </div>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+        <header class="topbar">
+            <button class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="topbar-title">My Profile</div>
+        </header>
+
+        <div class="page-content">
+            <div class="profile-layout">
+                
+                <!-- HEADER WIDGET -->
+                <div class="card profile-header">
+                    <div class="avatar-ring">
+                        <div class="avatar-letter" id="userInitial">S</div>
+                    </div>
+                    <div class="profile-info">
+                        <h2 class="profile-name" id="userName">Student</h2>
+                        <p class="profile-email text-muted" id="userEmail">Loading...</p>
+                        
+                        <div class="level-indicator">
+                            <span>Level 1 Scholar</span>
+                            <div class="xp-bar">
+                                <div class="xp-progress" style="width: 35%;"></div>
+                            </div>
+                            <span class="xp-text">15 / 50 XP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATS ROW -->
+                <div class="stats-grid">
+                    <div class="card stat-card border-blue">
+                        <div class="stat-icon text-blue">📄</div>
+                        <div class="stat-val" id="docCount">0</div>
+                        <div class="stat-label text-muted">Documents Uploaded</div>
+                    </div>
+                    <div class="card stat-card border-purple">
+                        <div class="stat-icon text-purple">✨</div>
+                        <div class="stat-val" id="quizCount">0</div>
+                        <div class="stat-label text-muted">Quizzes Taken</div>
+                    </div>
+                    <div class="card stat-card border-green">
+                        <div class="stat-icon text-green">🔥</div>
+                        <div class="stat-val" id="streakCount">0</div>
+                        <div class="stat-label text-muted">Day Streak</div>
+                    </div>
+                </div>
+
+                <div class="grid-layout">
+                    <!-- CHART AREA -->
+                    <div class="grid-main">
+                        <div class="card chart-card">
+                            <h3 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 20px;">Study Performance</h3>
+                            <canvas id="performanceChart" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- BIO / CHARACTER AREA -->
+                    <div class="grid-side">
+                        <div class="card bio-card">
+                            <h3 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 12px; font-size: 1.1rem;">Your AI Tutor</h3>
+                            <div class="tutor-box">
+                                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Spark&backgroundColor=7c6af7" alt="Spark.E" width="60" style="border-radius: 50%; margin-bottom:12px;">
+                                <h4 style="margin-bottom: 8px;">Spark.E</h4>
+                                <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5;">Spark.E adapts to your learning style. As you upload more docs, Spark.E gets smarter about your curriculum.</p>
+                            </div>
+                        </div>
+
+                        <div class="card" style="padding: 24px;">
+                            <h3 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 16px; font-size: 1.1rem;">Personalize</h3>
+                            <label style="display:block; font-size: 0.85rem; margin-bottom:8px; color:var(--text2);">Display Name</label>
+                            <input type="text" id="displayName" placeholder="Enter your name" class="profile-input">
+                            <button class="btn btn-primary" onclick="saveProfile()" style="width: 100%; justify-content:center; margin-top: 12px;">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="../JavaScript/shared.js"></script>
+<script src="../JavaScript/profile.js"></script>
+
+</body>
+</html>

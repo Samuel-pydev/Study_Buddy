@@ -54,3 +54,16 @@ def signout(authorization: str = Header(...)):
         return {"message": "Farewell"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@router.get("/me")
+def get_me(authorization: str = Header(...)):
+    try:
+        token = authorization.replace("Bearer ", "")
+        response = supabase.auth.get_user(token)
+        return {
+            "id": response.user.id,
+            "email": response.user.email,
+            "display_name": response.user.user_metadata.get("display_name", "")
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
