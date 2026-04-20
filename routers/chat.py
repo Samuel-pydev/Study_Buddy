@@ -6,22 +6,12 @@ from prompts import BUDDY_SYSTEM_PROMPT
 import jwt
 
 security = HTTPBearer()
-
-COLLECTION_NAME = "student_documents"
-# EMBEDDINGS_SIZE = 3072
 COLLECTION_NAME_OLLAMA = "student_documents_ollama"
 
-# Connect to Supabase
 supabase_client = get_supabase_client()
-
-# Connect to Qdrant
 qdrant_client = get_qdrant_client()
-
-# Embedding model
 embeddings = get_embeddings()
 ollama_embeddings = get_ollama_embeddings()
-
-# Groq LLM
 groq_client = get_groq_client()
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -30,13 +20,11 @@ def get_user_id_from_token(token: str):
     decoded = jwt.decode(token, options={"verify_signature": False})
     return decoded["sub"]
 
-
 class ChatRequest(BaseModel):
-    question : str
-    filename : str
-    doc_id : str
-    
-    
+    question: str
+    filename: str
+    doc_id: str
+
 @router.post("/ask")
 def ask(request: ChatRequest, credentials = Security(security)):
     try:
@@ -52,8 +40,8 @@ def ask(request: ChatRequest, credentials = Security(security)):
             query=question_embedding,
             query_filter={
                 "must": [
-                    {"key": "user_id","match": {"value": user_id}},
-                    {"key": "doc_id","match": {"value": selected_doc_id}}
+                    {"key": "user_id", "match": {"value": user_id}},
+                    {"key": "doc_id", "match": {"value": request.doc_id}}  # ✅ fixed
                 ]
             },
             limit=5
@@ -65,9 +53,9 @@ def ask(request: ChatRequest, credentials = Security(security)):
         history_response = supabase_client.table("chat_history")\
             .select("*")\
             .eq("user_id", user_id)\
-            .eq("filename", request.filename)\
+            .eq("doc_id", request.doc_id)\
             .order("created_at", desc=False)\
-            .limit(10)\
+            .limit(15)\
             .execute()
 
         # Build conversation for Groq
@@ -97,20 +85,20 @@ def ask(request: ChatRequest, credentials = Security(security)):
 
         # Save to Supabase
         supabase_client.table("chat_history").insert([
-            {"user_id": user_id, "filename": request.filename, "role": "user", "message": request.question},
-            {"user_id": user_id, "filename": request.filename, "role": "ai", "message": answer}
+            {"user_id": user_id, "filename": request.filename, "doc_id": request.doc_id, "role": "user", "message": request.question},
+            {"user_id": user_id, "filename": request.filename, "doc_id": request.doc_id, "role": "ai", "message": answer}
         ]).execute()
 
         return {"answer": answer}
 
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=400, detail=str(e))
-    
 
-    
 
 @router.get("/history")
-def get_history(filename: str, credentials = Security(security)):
+def get_history(filename: str, doc_id: str, credentials = Security(security)):
     try:
         token = credentials.credentials
         user_id = get_user_id_from_token(token)
@@ -118,10 +106,11 @@ def get_history(filename: str, credentials = Security(security)):
         response = supabase_client.table("chat_history")\
             .select("*")\
             .eq("user_id", user_id)\
-            .eq("filename", filename)\
+            .eq("doc_id", doc_id)\
             .order("created_at", desc=False)\
             .execute()
 
         return {"history": response.data}
+
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

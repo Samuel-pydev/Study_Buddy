@@ -83,6 +83,13 @@ client.create_payload_index(
     field_schema=PayloadSchemaType.KEYWORD
 )
 
+# Create index on doc_id
+client.create_payload_index(
+    collection_name=COLLECTION_NAME_OLLAMA,
+    field_name="doc_id",
+    field_schema=PayloadSchemaType.KEYWORD
+)
+
 def get_user_id_from_token(token: str):
     decoded = jwt.decode(token, options={"verify_signature": False})
     return decoded["sub"]
