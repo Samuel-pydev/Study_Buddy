@@ -1,45 +1,28 @@
 from fastapi import APIRouter, HTTPException, Security
 from fastapi.security import HTTPBearer
 from pydantic import BaseModel
-from qdrant_client import QdrantClient
-from langchain_ollama import OllamaEmbeddings
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from groq import Groq
-import os
+from clients import get_qdrant_client, get_embeddings, get_groq_client, get_supabase_client, get_ollama_embeddings
+from prompts import BUDDY_SYSTEM_PROMPT
 import jwt
-from dotenv import load_dotenv
-
-load_dotenv()
 
 security = HTTPBearer()
 
 COLLECTION_NAME = "student_documents"
+# EMBEDDINGS_SIZE = 3072
+COLLECTION_NAME_OLLAMA = "student_documents_ollama"
+
+# Connect to Supabase
+supabase_client = get_supabase_client()
 
 # Connect to Qdrant
-client = QdrantClient(
-    url=os.getenv("QDRANT_URL"),
-    api_key=os.getenv("QDRANT_API_KEY")
-)
-
-
-# embeddings = HuggingFaceEndpointEmbeddings(
-#     model="nomic-ai/nomic-embed-text-v1.5",
-#     huggingfacehub_api_token=os.getenv("HUGGINGFACE_API_KEY")
-# )
+qdrant_client = get_qdrant_client()
 
 # Embedding model
-embeddings = GoogleGenerativeAIEmbeddings(
-    model="gemini-embedding-2-preview",
-    google_api_key=os.getenv("GEMINI_API_KEY")
-)
-EMBEDDINGS_SIZE = 3072
+embeddings = get_embeddings()
+ollama_embeddings = get_ollama_embeddings()
 
 # Groq LLM
-groq_client = Groq(
-    api_key=os.getenv("GROQ_API_KEY")
-)
-
-
+groq_client = get_groq_client()
 
 router = APIRouter(prefix="/chat", tags=["chat"])
 
@@ -50,53 +33,95 @@ def get_user_id_from_token(token: str):
 
 class ChatRequest(BaseModel):
     question : str
+    filename : str
+    doc_id : str
     
     
 @router.post("/ask")
-def ask(request : ChatRequest, credentials = Security(security)):
+def ask(request: ChatRequest, credentials = Security(security)):
     try:
-        # Get user_id from token
         token = credentials.credentials
         user_id = get_user_id_from_token(token)
-        
+
         # Embed the question
-        question_embedding = embeddings.embed_query(request.question)
-        
-        # Search Qdrant for relevant chunks belonging to this user only 
-        results = client.query_points(
-            collection_name=COLLECTION_NAME,
+        question_embedding = ollama_embeddings.embed_query(request.question)
+
+        # Search Qdrant
+        results = qdrant_client.query_points(
+            collection_name=COLLECTION_NAME_OLLAMA,
             query=question_embedding,
             query_filter={
-                "must":[
-                    {"key": "user_id", "match": {"value": user_id}}
+                "must": [
+                    {"key": "user_id","match": {"value": user_id}},
+                    {"key": "doc_id","match": {"value": selected_doc_id}}
                 ]
             },
-            limit=3
+            limit=5
         ).points
-        
-        # Extract the text from the chunks
+
         context = "\n\n".join([r.payload["text"] for r in results])
-        
+
+        # Fetch last 10 messages from Supabase
+        history_response = supabase_client.table("chat_history")\
+            .select("*")\
+            .eq("user_id", user_id)\
+            .eq("filename", request.filename)\
+            .order("created_at", desc=False)\
+            .limit(10)\
+            .execute()
+
+        # Build conversation for Groq
+        conversation = []
+        for msg in history_response.data:
+            conversation.append({
+                "role": "user" if msg["role"] == "user" else "assistant",
+                "content": msg["message"]
+            })
+
+        # Add current question
+        conversation.append({
+            "role": "user",
+            "content": f"Context:\n{context}\n\nQuestion: {request.question}"
+        })
+
         # Send to Groq
         response = groq_client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
-                {
-                    "role": "system",
-                    "content": """You are a helpful tutor. Use the context below to answer the question.
-                    Explain with examples and don't just give definitions.
-                    If the answer is not in the context say 'I don't know based on your document.'"""
-                },
-                {
-                     "role": "user",
-                    "content": f"Context:\n{context}\n\nQuestion: {request.question}"
-                }
+                {"role": "system", "content": BUDDY_SYSTEM_PROMPT},
+                *conversation
             ]
         )
-        
-        return{
-            "answer": response.choices[0].message.content
-        }
-        
+
+        answer = response.choices[0].message.content
+
+        # Save to Supabase
+        supabase_client.table("chat_history").insert([
+            {"user_id": user_id, "filename": request.filename, "role": "user", "message": request.question},
+            {"user_id": user_id, "filename": request.filename, "role": "ai", "message": answer}
+        ]).execute()
+
+        return {"answer": answer}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+
+    
+
+@router.get("/history")
+def get_history(filename: str, credentials = Security(security)):
+    try:
+        token = credentials.credentials
+        user_id = get_user_id_from_token(token)
+
+        response = supabase_client.table("chat_history")\
+            .select("*")\
+            .eq("user_id", user_id)\
+            .eq("filename", filename)\
+            .order("created_at", desc=False)\
+            .execute()
+
+        return {"history": response.data}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
